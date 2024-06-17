@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model documento {
+  id_documento      Int             @id
+  nome              String?         @db.VarChar(100)
+  descricao         String?
+  caminho_arquivo   String?         @db.VarChar(255)
+  dt_criacao        DateTime?       @db.Date
+  dt_modificacao    DateTime?       @db.Date
+  id_proprietario   Int?
+  id_tipo_documento Int?
+  usuario           usuario?        @relation(fields: [id_proprietario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  tipo_documento    tipo_documento? @relation(fields: [id_tipo_documento], references: [id_tipo_documento], onDelete: NoAction, onUpdate: NoAction)
+  documento_tag     documento_tag[]
+  log_acesso        log_acesso[]
+  permissao         permissao[]
+  versao            versao[]
+}
+
+model documento_tag {
+  id_documento Int
+  id_tag       Int
+  documento    documento @relation(fields: [id_documento], references: [id_documento], onDelete: NoAction, onUpdate: NoAction)
+  tag          tag       @relation(fields: [id_tag], references: [id_tag], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_documento, id_tag])
+}
+
+model log_acesso {
+  id_log       Int        @id
+  id_usuario   Int?
+  id_documento Int?
+  dt_acesso    DateTime?  @db.Date
+  tp_acesso    String?    @db.VarChar(50)
+  documento    documento? @relation(fields: [id_documento], references: [id_documento], onDelete: NoAction, onUpdate: NoAction)
+  usuario      usuario?   @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model pasta {
+  id_pasta        Int         @id
+  nome            String?     @db.VarChar(100)
+  descricao       String?
+  id_pasta_pai    Int?
+  id_proprietario Int?
+  dt_criacao      DateTime?   @db.Date
+  pasta           pasta?      @relation("pastaTopasta", fields: [id_pasta_pai], references: [id_pasta], onDelete: NoAction, onUpdate: NoAction)
+  other_pasta     pasta[]     @relation("pastaTopasta")
+  usuario         usuario?    @relation(fields: [id_proprietario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  permissao       permissao[]
+}
+
+model permissao {
+  id_permissao Int        @id
+  id_usuario   Int?
+  id_documento Int?
+  id_pasta     Int?
+  tp_permissao String?    @db.VarChar(50)
+  documento    documento? @relation(fields: [id_documento], references: [id_documento], onDelete: NoAction, onUpdate: NoAction)
+  pasta        pasta?     @relation(fields: [id_pasta], references: [id_pasta], onDelete: NoAction, onUpdate: NoAction)
+  usuario      usuario?   @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model tag {
+  id_tag        Int             @id
+  nome          String?         @db.VarChar(50)
+  documento_tag documento_tag[]
+}
+
+model tipo_documento {
+  id_tipo_documento Int         @id
+  nome              String?     @db.VarChar(50)
+  descricao         String?
+  documento         documento[]
+}
+
+model usuario {
+  id_usuario  Int          @id
+  nome        String?      @db.VarChar(100)
+  email       String?      @unique @db.VarChar(100)
+  senha       String?      @db.VarChar(100)
+  dt_cadastro DateTime?    @db.Date
+  tp_usuario  String?      @db.VarChar(50)
+  documento   documento[]
+  log_acesso  log_acesso[]
+  pasta       pasta[]
+  permissao   permissao[]
+}
+
+model versao {
+  id_versao           Int        @id
+  id_documento        Int?
+  numero_versao       Int?
+  caminho_arquivo     String?    @db.VarChar(255)
+  dt_criacao          DateTime?  @db.Date
+  descricao_alteracao String?
+  documento           documento? @relation(fields: [id_documento], references: [id_documento], onDelete: NoAction, onUpdate: NoAction)
+}
