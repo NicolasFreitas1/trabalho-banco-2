@@ -1,17 +1,20 @@
-import { IsEmail, IsEnum, IsString } from "class-validator";
+import { IsEmail, IsIn, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUserDto {
-    @IsString()
-    name: string
+  @IsString()
+  @MinLength(1)
+  @MaxLength(100)
+  name: string;
 
-    @IsString()
-    @IsEmail()
-    email: string
+  @IsString()
+  @IsEmail()
+  @MaxLength(250)
+  email: string;
 
-    @IsString()
-    password: string
+  @IsString()
+  password: string;
 
-    @IsString()
-    @IsEnum(["admin", "user"])
-    type: "admin" | "user"
+  @IsString()
+  @IsIn(['ADMIN', 'USER'])
+  type: 'ADMIN' | 'USER';
 }

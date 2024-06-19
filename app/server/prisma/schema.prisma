@@ -1,104 +1,150 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
-model documento {
-  id_documento      Int             @id
-  nome              String?         @db.VarChar(100)
-  descricao         String?
-  caminho_arquivo   String?         @db.VarChar(255)
-  dt_criacao        DateTime?       @db.Date
-  dt_modificacao    DateTime?       @db.Date
-  id_proprietario   Int?
-  id_tipo_documento Int?
-  usuario           usuario?        @relation(fields: [id_proprietario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
-  tipo_documento    tipo_documento? @relation(fields: [id_tipo_documento], references: [id_tipo_documento], onDelete: NoAction, onUpdate: NoAction)
-  documento_tag     documento_tag[]
-  log_acesso        log_acesso[]
-  permissao         permissao[]
-  versao            versao[]
+enum UserType {
+    ADMIN
+    USER
+
+    @@map("tp_usario")
 }
 
-model documento_tag {
-  id_documento Int
-  id_tag       Int
-  documento    documento @relation(fields: [id_documento], references: [id_documento], onDelete: NoAction, onUpdate: NoAction)
-  tag          tag       @relation(fields: [id_tag], references: [id_tag], onDelete: NoAction, onUpdate: NoAction)
+enum AccessType {
+    VIEW
+    EDIT
 
-  @@id([id_documento, id_tag])
+    @@map("tp_acesso")
 }
 
-model log_acesso {
-  id_log       Int        @id
-  id_usuario   Int?
-  id_documento Int?
-  dt_acesso    DateTime?  @db.Date
-  tp_acesso    String?    @db.VarChar(50)
-  documento    documento? @relation(fields: [id_documento], references: [id_documento], onDelete: NoAction, onUpdate: NoAction)
-  usuario      usuario?   @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+enum PermissionType {
+    READ
+    WRITE
+
+    @@map("tp_permissao")
 }
 
-model pasta {
-  id_pasta        Int         @id
-  nome            String?     @db.VarChar(100)
-  descricao       String?
-  id_pasta_pai    Int?
-  id_proprietario Int?
-  dt_criacao      DateTime?   @db.Date
-  pasta           pasta?      @relation("pastaTopasta", fields: [id_pasta_pai], references: [id_pasta], onDelete: NoAction, onUpdate: NoAction)
-  other_pasta     pasta[]     @relation("pastaTopasta")
-  usuario         usuario?    @relation(fields: [id_proprietario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
-  permissao       permissao[]
+model Document {
+    id          Int      @id @default(autoincrement()) @map("id_documento")
+    name        String   @map("nome") @db.VarChar(100)
+    description String   @map("descricao") @db.Text
+    path        String   @map("caminho_arquivo") @db.VarChar(255)
+    createdAt   DateTime @default(now()) @map("dt_criacao")
+    updatedAt   DateTime @updatedAt @map("dt_modificacao")
+    ownerId     Int      @map("id_propretario")
+    typeId      Int      @map("id_tipo_documento")
+
+    type         DocumentType  @relation(fields: [typeId], references: [id])
+    onwer        User          @relation(fields: [ownerId], references: [id])
+    documentTags DocumentTag[]
+    accessLogs   AccessLog[]
+    Permission   Permission[]
+    versions     Version[]
+
+    @@map("documento")
 }
 
-model permissao {
-  id_permissao Int        @id
-  id_usuario   Int?
-  id_documento Int?
-  id_pasta     Int?
-  tp_permissao String?    @db.VarChar(50)
-  documento    documento? @relation(fields: [id_documento], references: [id_documento], onDelete: NoAction, onUpdate: NoAction)
-  pasta        pasta?     @relation(fields: [id_pasta], references: [id_pasta], onDelete: NoAction, onUpdate: NoAction)
-  usuario      usuario?   @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+model User {
+    id        Int      @id @default(autoincrement()) @map("id_usuario")
+    name      String   @map("nome") @db.VarChar(100)
+    email     String   @unique @map("email") @db.VarChar(250)
+    password  String   @map("senha") @db.VarChar(100)
+    createdAt DateTime @default(now()) @map("dt_cadastro")
+    type      UserType @default(USER) @map("tp_usuario")
+
+    documents   Document[]
+    accessLogs  AccessLog[]
+    collections Collection[]
+    permissions Permission[]
+
+    @@map("usuario")
 }
 
-model tag {
-  id_tag        Int             @id
-  nome          String?         @db.VarChar(50)
-  documento_tag documento_tag[]
+model Tag {
+    id   Int    @id @default(autoincrement()) @map("id_tag")
+    name String @map("nome") @db.VarChar(50)
+
+    documentTags DocumentTag[]
+
+    @@map("tag")
 }
 
-model tipo_documento {
-  id_tipo_documento Int         @id
-  nome              String?     @db.VarChar(50)
-  descricao         String?
-  documento         documento[]
+model DocumentTag {
+    documentId Int @map("id_documento")
+    tagId      Int @map("id_tag")
+
+    document Document @relation(fields: [documentId], references: [id])
+    tag      Tag      @relation(fields: [tagId], references: [id])
+
+    @@id([documentId, tagId])
+    @@map("documento_tag")
 }
 
-model usuario {
-  id_usuario  Int          @id
-  nome        String?      @db.VarChar(100)
-  email       String?      @unique @db.VarChar(100)
-  senha       String?      @db.VarChar(100)
-  dt_cadastro DateTime?    @db.Date
-  tp_usuario  String?      @db.VarChar(50)
-  documento   documento[]
-  log_acesso  log_acesso[]
-  pasta       pasta[]
-  permissao   permissao[]
+model AccessLog {
+    id         Int        @id @default(autoincrement()) @map("id_log")
+    userId     Int        @map("id_usuario")
+    documentId Int        @map("id_documento")
+    accessAt   DateTime   @map("dt_acesso")
+    accessType AccessType @map("tp_acesso")
+
+    document Document @relation(fields: [documentId], references: [id])
+    user     User     @relation(fields: [userId], references: [id])
+
+    @@map("log_acesso")
 }
 
-model versao {
-  id_versao           Int        @id
-  id_documento        Int?
-  numero_versao       Int?
-  caminho_arquivo     String?    @db.VarChar(255)
-  dt_criacao          DateTime?  @db.Date
-  descricao_alteracao String?
-  documento           documento? @relation(fields: [id_documento], references: [id_documento], onDelete: NoAction, onUpdate: NoAction)
+model Collection {
+    id                 Int      @id @default(autoincrement()) @map("id_pasta")
+    name               String   @map("nome") @db.VarChar(100)
+    description        String   @map("descricao")
+    parentCollectionId Int      @map("id_pasta_pai")
+    onwerId            Int      @map("id_propretario")
+    createdAt          DateTime @default(now()) @map("dt_criacao")
+
+    onwer                User         @relation(fields: [onwerId], references: [id])
+    collection           Collection   @relation("pastaTopasta", fields: [parentCollectionId], references: [id])
+    chieldrenCollections Collection[] @relation("pastaTopasta")
+    permissions          Permission[]
+
+    @@map("pasta")
+}
+
+model DocumentType {
+    id          Int        @id @default(autoincrement()) @map("id_tipo_documento")
+    name        String     @map("nome") @db.VarChar(50)
+    description String     @map("descricao")
+    documents   Document[]
+
+    @@map("tipo_documento")
+}
+
+model Permission {
+    id           Int            @id @default(autoincrement()) @map("id_permissao")
+    userId       Int            @map("id_usuario")
+    documentId   Int?           @map("id_documento")
+    collectionId Int?           @map("id_pasta")
+    type         PermissionType @map("tp_permissao")
+
+    document  Document?   @relation(fields: [documentId], references: [id])
+    collecion Collection? @relation(fields: [collectionId], references: [id])
+    user      User        @relation(fields: [userId], references: [id])
+
+    @@map("permissao")
+}
+
+model Version {
+    id            Int      @id @default(autoincrement()) @map("id_versao")
+    documentId    Int      @map("id_documento")
+    versionNumber Int      @map("numero_versao")
+    path          String   @db.VarChar(255)
+    createdAt     DateTime @default(now()) @map("dt_criacao")
+    description   String   @map("descricao_alteracao")
+
+    document Document @relation(fields: [documentId], references: [id])
+
+    @@map("versao")
 }
