@@ -38,12 +38,13 @@ model Document {
     ownerId     Int      @map("id_propretario")
     typeId      Int      @map("id_tipo_documento")
 
-    type         DocumentType  @relation(fields: [typeId], references: [id])
-    onwer        User          @relation(fields: [ownerId], references: [id])
-    documentTags DocumentTag[]
-    accessLogs   AccessLog[]
-    Permission   Permission[]
-    versions     Version[]
+    type                DocumentType         @relation(fields: [typeId], references: [id])
+    onwer               User                 @relation(fields: [ownerId], references: [id])
+    documentTags        DocumentTag[]
+    accessLogs          AccessLog[]
+    Permission          Permission[]
+    versions            Version[]
+    documentCollections DocumentCollection[]
 
     @@map("documento")
 }
@@ -105,10 +106,11 @@ model Collection {
     onwerId            Int      @map("id_propretario")
     createdAt          DateTime @default(now()) @map("dt_criacao")
 
-    onwer                User         @relation(fields: [onwerId], references: [id])
-    collection           Collection   @relation("pastaTopasta", fields: [parentCollectionId], references: [id])
-    chieldrenCollections Collection[] @relation("pastaTopasta")
+    onwer                User                 @relation(fields: [onwerId], references: [id])
+    collection           Collection           @relation("pastaTopasta", fields: [parentCollectionId], references: [id])
+    chieldrenCollections Collection[]         @relation("pastaTopasta")
     permissions          Permission[]
+    documentCollections  DocumentCollection[]
 
     @@map("pasta")
 }
@@ -147,4 +149,14 @@ model Version {
     document Document @relation(fields: [documentId], references: [id])
 
     @@map("versao")
+}
+
+model DocumentCollection {
+    documentId   Int @map("id_documento")
+    collectionId Int @map("id_pasta")
+
+    document   Document   @relation(fields: [documentId], references: [id])
+    collection Collection @relation(fields: [collectionId], references: [id])
+
+    @@id([documentId, collectionId])
 }
