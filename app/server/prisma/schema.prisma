@@ -39,7 +39,7 @@ model Document {
     typeId      Int      @map("id_tipo_documento")
 
     type                DocumentType         @relation(fields: [typeId], references: [id])
-    onwer               User                 @relation(fields: [ownerId], references: [id])
+    owner               User                 @relation(fields: [ownerId], references: [id])
     documentTags        DocumentTag[]
     accessLogs          AccessLog[]
     Permission          Permission[]
