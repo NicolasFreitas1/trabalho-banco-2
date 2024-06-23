@@ -17,6 +17,12 @@ export class DocumentsService {
 
         const { originalname, path } = file;
 
+        /**
+         *  INSERT INTO documento (nome, descricao, caminho_arquivo, dt_criacao, dt_modificacao, id_propretario, id_tipo_documento)
+         *  VALUES ($1, $2, $3, NOW(), NOW(), $4, $5)
+         *  RETURNING *;
+         *
+         */
         const document = await this.prisma.document.create({
             data: {
                 description,
@@ -31,10 +37,18 @@ export class DocumentsService {
     }
 
     async findAll() {
+        /**
+         * SELECT * FROM documento;
+         */
         return this.prisma.document.findMany();
     }
 
     async findOne(id: number) {
+        /**
+         *  SELECT d.*
+         *  FROM documento d
+         *  WHERE d.id_documento = $1;
+         */
         const document = await this.prisma.document.findUnique({
             where: { id },
         });
@@ -57,6 +71,11 @@ export class DocumentsService {
         createDocumentDto: CreateDocumentDto,
         file: Express.Multer.File,
     ) {
+        /**
+         *  SELECT d.*
+         *  FROM documento d
+         *  WHERE d.id_documento = $1;
+         */
         const document = await this.prisma.document.findUnique({
             where: {
                 id,
@@ -67,6 +86,11 @@ export class DocumentsService {
             throw new NotFoundException(`Document with id ${id} not found`);
         }
 
+        /**
+         *  SELECT *
+         *  FROM versao
+         *  WHERE id_documento = $1;
+         */
         const documentVersions = await this.prisma.version.findMany({
             where: {
                 documentId: document.id,
@@ -105,6 +129,12 @@ export class DocumentsService {
             throw new NotFoundException(`Document with id ${id} not found`);
         }
 
+        /**
+         *  UPDATE documento
+         *  SET descricao = $1
+         *  WHERE id_documento = $2
+         *  RETURNING *;
+         */
         return this.prisma.document.update({
             data: {
                 description: updateDocumentDescriptionDto.description,
@@ -131,7 +161,12 @@ export class DocumentsService {
             console.error(`Error deleting file ${filePath}:`, error);
         }
 
-        // Deletar documento do banco de dados
+        /**
+         *  DELETE FROM documento
+         *  WHERE id_documento = $1
+         *  RETURNING *;
+         */
+
         await this.prisma.document.delete({
             where: { id },
         });
