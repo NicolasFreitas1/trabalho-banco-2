@@ -1,12 +1,3 @@
--- CreateEnum
-CREATE TYPE "tp_usario" AS ENUM ('ADMIN', 'USER');
-
--- CreateEnum
-CREATE TYPE "tp_acesso" AS ENUM ('VIEW', 'EDIT');
-
--- CreateEnum
-CREATE TYPE "tp_permissao" AS ENUM ('READ', 'WRITE');
-
 -- Inserir usuários
 INSERT INTO usuario (id_usuario, nome, email, senha, dt_cadastro, tp_usuario) VALUES
 (1, 'Alice Silva', 'alice@example.com', 'senha123', '2023-01-01', 'admin'),
