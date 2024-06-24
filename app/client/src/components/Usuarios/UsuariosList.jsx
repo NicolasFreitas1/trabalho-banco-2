@@ -1,4 +1,3 @@
-// src/components/Usuarios/UsuariosList.js
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -12,7 +11,7 @@ const UsuariosList = () => {
 
   const fetchUsuarios = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/usuarios'); // ajuste a URL conforme sua API
+      const response = await axios.get('http://localhost:3000/users');
       setUsuarios(response.data);
     } catch (error) {
       console.error('Erro ao buscar usuários:', error);
@@ -21,7 +20,7 @@ const UsuariosList = () => {
 
   const handleDeleteUsuario = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/usuarios/${id}`); // ajuste a URL conforme sua API
+      await axios.delete(`http://localhost:3000/users/${id}`);
       fetchUsuarios();
     } catch (error) {
       console.error('Erro ao deletar usuário:', error);
@@ -36,7 +35,7 @@ const UsuariosList = () => {
         {usuarios.map((usuario) => (
           <li key={usuario.id_usuario}>
             <Link to={`/usuario/${usuario.id_usuario}`}>
-              {usuario.nome} ({usuario.email})
+              {usuario.nome} ({usuario.name})
             </Link>
             <button onClick={() => handleDeleteUsuario(usuario.id_usuario)}>Excluir</button>
           </li>

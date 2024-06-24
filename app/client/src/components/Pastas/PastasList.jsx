@@ -11,7 +11,7 @@ const PastasList = () => {
 
   const fetchPastas = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/pastas'); // ajuste a URL conforme sua API
+      const response = await axios.get('http://localhost:3000/pastas'); // ajuste a URL conforme sua API
       setPastas(response.data);
     } catch (error) {
       console.error('Erro ao buscar pastas:', error);

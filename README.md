@@ -4,7 +4,7 @@
 
 Lucas Perito Lopes - @llucaslopes<br>
 Nicolas Andrade de Freitas - @NicolasFreitas1 <br>
-Vitor Valcanaia Rosendo MartinsVitor Valcanaia - @Valcanaia282<br>
+Vitor Valcanaia Rosendo Martins - @Valcanaia282<br>
 ...
 
 ### Modelo Físico

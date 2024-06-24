@@ -11,7 +11,7 @@ const DocumentosList = () => {
 
   const fetchDocumentos = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/documentos'); // ajuste a URL conforme sua API
+      const response = await axios.get('http://localhost:3000/documents'); // ajuste a URL conforme sua API
       setDocumentos(response.data);
     } catch (error) {
       console.error('Erro ao buscar documentos:', error);

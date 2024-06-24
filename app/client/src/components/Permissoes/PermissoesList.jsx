@@ -11,7 +11,7 @@ const PermissoesList = () => {
 
   const fetchPermissoes = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/permissoes'); // ajuste a URL conforme sua API
+      const response = await axios.get('http://localhost:3000/permissoes'); // ajuste a URL conforme sua API
       setPermissoes(response.data);
     } catch (error) {
       console.error('Erro ao buscar permissões:', error);

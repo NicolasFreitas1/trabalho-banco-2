@@ -23,7 +23,7 @@ const UsuarioForm = () => {
 
   const fetchUsuario = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/usuarios/${id}`); // ajuste a URL conforme sua API
+      const response = await axios.get(`http://localhost:3000/users/${id}`); // ajuste a URL conforme sua API
       setUsuario(response.data);
     } catch (error) {
       console.error('Erro ao buscar usuário:', error);
@@ -39,9 +39,9 @@ const UsuarioForm = () => {
     e.preventDefault();
     try {
       if (id === 'novo') {
-        await axios.post('http://localhost:5000/api/usuarios', usuario); // ajuste a URL conforme sua API
+        await axios.post('http://localhost:3000/users', usuario); // ajuste a URL conforme sua API
       } else {
-        await axios.put(`http://localhost:5000/api/usuarios/${id}`, usuario); // ajuste a URL conforme sua API
+        await axios.put(`http://localhost:3000/users/${id}`, usuario); // ajuste a URL conforme sua API
       }
       setRedirectToUsuarios(true);
     } catch (error) {
