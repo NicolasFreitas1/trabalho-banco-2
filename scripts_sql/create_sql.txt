@@ -6,7 +6,6 @@ CREATE TYPE "tp_acesso" AS ENUM ('VIEW', 'EDIT');
 
 -- CreateEnum
 CREATE TYPE "tp_permissao" AS ENUM ('READ', 'WRITE');
-
 -- public.tag definition
 
 -- Drop table
@@ -116,7 +115,7 @@ CREATE TABLE public.pasta (
 	id_pasta serial4 NOT NULL,
 	nome varchar(100) NOT NULL,
 	descricao text NOT NULL,
-	id_pasta_pai int4 NOT NULL,
+	id_pasta_pai int4,
 	id_propretario int4 NOT NULL,
 	dt_criacao timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	CONSTRAINT pasta_pkey PRIMARY KEY (id_pasta),
