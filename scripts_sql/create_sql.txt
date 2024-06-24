@@ -1,3 +1,12 @@
+-- CreateEnum
+CREATE TYPE "tp_usario" AS ENUM ('ADMIN', 'USER');
+
+-- CreateEnum
+CREATE TYPE "tp_acesso" AS ENUM ('VIEW', 'EDIT');
+
+-- CreateEnum
+CREATE TYPE "tp_permissao" AS ENUM ('READ', 'WRITE');
+
 -- public.tag definition
 
 -- Drop table
