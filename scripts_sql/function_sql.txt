@@ -1,0 +1,47 @@
+-- Quantos documentos cada usuário possui na coleção principal (pasta sem pai)?
+CREATE OR REPLACE FUNCTION count_documents_in_main_collection()
+RETURNS TABLE (usuario varchar(100), quantidade_documentos bigint) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT u.nome AS usuario, COUNT(d.id_documento) AS quantidade_documentos
+    FROM usuario u
+    LEFT JOIN documento d ON u.id_usuario = d.id_propretario
+    LEFT JOIN pasta p ON u.id_usuario = p.id_propretario AND p.id_pasta_pai IS NULL
+    GROUP BY u.nome;
+END;
+$$ LANGUAGE PLPGSQL;
+
+-- Qual é o documento mais acessado até o momento?
+CREATE OR REPLACE FUNCTION find_most_accessed_document()
+RETURNS TABLE (documento_mais_acessado varchar(100), quantidade_acessos bigint) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT d.nome AS documento_mais_acessado, COUNT(l.id_log) AS quantidade_acessos
+    FROM log_acesso l
+    JOIN documento d ON l.id_documento = d.id_documento
+    GROUP BY d.nome
+    ORDER BY quantidade_acessos DESC
+    LIMIT 1;
+END;
+$$ LANGUAGE PLPGSQL;
+
+-- Quantos documentos estão associados a cada tipo de documento?
+CREATE OR REPLACE FUNCTION count_documents_by_document_type()
+RETURNS TABLE (tipo_documento varchar(50), quantidade_documentos bigint) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT td.nome AS tipo_documento, COUNT(d.id_documento) AS quantidade_documentos
+    FROM tipo_documento td
+    LEFT JOIN documento d ON td.id_tipo_documento = d.id_tipo_documento
+    GROUP BY td.nome;
+END;
+$$ LANGUAGE PLPGSQL;
+
+-- Exemplo de chamada da função para contar documentos na coleção principal
+SELECT * FROM count_documents_in_main_collection();
+
+-- Exemplo de chamada da função para encontrar o documento mais acessado
+SELECT * FROM find_most_accessed_document();
+
+-- Exemplo de chamada da função para contar documentos por tipo de documento
+SELECT * FROM count_documents_by_document_type();
