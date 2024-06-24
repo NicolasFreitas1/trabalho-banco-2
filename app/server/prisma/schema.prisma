@@ -159,4 +159,5 @@ model DocumentCollection {
     collection Collection @relation(fields: [collectionId], references: [id])
 
     @@id([documentId, collectionId])
+    @@map("documento_pasta")
 }
