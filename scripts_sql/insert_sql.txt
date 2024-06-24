@@ -1,15 +1,15 @@
 -- Inserir usuários
 INSERT INTO usuario (id_usuario, nome, email, senha, dt_cadastro, tp_usuario) VALUES
-(1, 'Alice Silva', 'alice@example.com', 'senha123', '2023-01-01', 'admin'),
-(2, 'Bruno Souza', 'bruno@example.com', 'senha123', '2023-01-02', 'user'),
-(3, 'Carla Pereira', 'carla@example.com', 'senha123', '2023-01-03', 'user'),
-(4, 'Diego Costa', 'diego@example.com', 'senha123', '2023-01-04', 'user'),
-(5, 'Elena Martins', 'elena@example.com', 'senha123', '2023-01-05', 'user'),
-(6, 'Felipe Lima', 'felipe@example.com', 'senha123', '2023-01-06', 'user'),
-(7, 'Gabriela Fernandes', 'gabriela@example.com', 'senha123', '2023-01-07', 'user'),
-(8, 'Henrique Almeida', 'henrique@example.com', 'senha123', '2023-01-08', 'user'),
-(9, 'Isabela Rodrigues', 'isabela@example.com', 'senha123', '2023-01-09', 'user'),
-(10, 'João Silva', 'joao@example.com', 'senha123', '2023-01-10', 'user');
+(1, 'Alice Silva', 'alice@example.com', 'senha123', '2023-01-01', 'ADMIN'),
+(2, 'Bruno Souza', 'bruno@example.com', 'senha123', '2023-01-02', 'USER'),
+(3, 'Carla Pereira', 'carla@example.com', 'senha123', '2023-01-03', 'USER'),
+(4, 'Diego Costa', 'diego@example.com', 'senha123', '2023-01-04', 'USER'),
+(5, 'Elena Martins', 'elena@example.com', 'senha123', '2023-01-05', 'USER'),
+(6, 'Felipe Lima', 'felipe@example.com', 'senha123', '2023-01-06', 'USER'),
+(7, 'Gabriela Fernandes', 'gabriela@example.com', 'senha123', '2023-01-07', 'USER'),
+(8, 'Henrique Almeida', 'henrique@example.com', 'senha123', '2023-01-08', 'USER'),
+(9, 'Isabela Rodrigues', 'isabela@example.com', 'senha123', '2023-01-09', 'USER'),
+(10, 'João Silva', 'joao@example.com', 'senha123', '2023-01-10', 'USER');
 
 -- Inserir tipos de documentos
 INSERT INTO tipo_documento (id_tipo_documento, nome, descricao) VALUES
@@ -25,7 +25,7 @@ INSERT INTO tipo_documento (id_tipo_documento, nome, descricao) VALUES
 (10, 'Outros', 'Outros tipos de documentos');
 
 -- Inserir documentos
-INSERT INTO documento (id_documento, nome, descricao, caminho_arquivo, dt_criacao, dt_modificacao, id_proprietario, id_tipo_documento) VALUES
+INSERT INTO documento (id_documento, nome, descricao, caminho_arquivo, dt_criacao, dt_modificacao, id_propretario, id_tipo_documento) VALUES
 (1, 'Relatório Financeiro Q1', 'Relatório financeiro do primeiro trimestre', '/caminho/relatorio1.pdf', '2023-01-15', '2023-01-15', 1, 1),
 (2, 'Proposta Comercial XYZ', 'Proposta comercial para o projeto XYZ', '/caminho/proposta1.pdf', '2023-02-01', '2023-02-01', 2, 2),
 (3, 'Contrato de Fornecimento', 'Contrato de fornecimento com a empresa ABC', '/caminho/contrato1.pdf', '2023-02-15', '2023-02-15', 3, 3),
@@ -38,7 +38,7 @@ INSERT INTO documento (id_documento, nome, descricao, caminho_arquivo, dt_criaca
 (10, 'Outros Documentos', 'Documentos diversos não categorizados', '/caminho/outros1.pdf', '2023-06-01', '2023-06-01', 10, 10);
 
 -- Inserir pastas
-INSERT INTO pasta (id_pasta, nome, descricao, id_pasta_pai, id_proprietario, dt_criacao) VALUES
+INSERT INTO pasta (id_pasta, nome, descricao, id_pasta_pai, id_propretario, dt_criacao) VALUES
 (1, 'Financeiro', 'Documentos financeiros', NULL, 1, '2023-01-01'),
 (2, 'Comercial', 'Documentos comerciais', NULL, 2, '2023-01-02'),
 (3, 'Jurídico', 'Documentos jurídicos', NULL, 3, '2023-01-03'),
@@ -52,32 +52,32 @@ INSERT INTO pasta (id_pasta, nome, descricao, id_pasta_pai, id_proprietario, dt_
 
 -- Inserir permissões
 INSERT INTO permissao (id_permissao, id_usuario, id_documento, id_pasta, tp_permissao) VALUES
-(1, 1, 1, NULL, 'leitura'),
-(2, 2, 2, NULL, 'escrita'),
-(3, 3, 3, NULL, 'leitura'),
-(4, 4, 4, NULL, 'leitura'),
-(5, 5, 5, NULL, 'escrita'),
-(6, 6, 6, NULL, 'leitura'),
-(7, 7, 7, NULL, 'leitura'),
-(8, 8, 8, NULL, 'escrita'),
-(9, 9, 9, NULL, 'leitura'),
-(10, 10, 10, NULL, 'leitura');
+(1, 1, 1, NULL, 'READ'),
+(2, 2, 2, NULL, 'WRITE'),
+(3, 3, 3, NULL, 'READ'),
+(4, 4, 4, NULL, 'READ'),
+(5, 5, 5, NULL, 'WRITE'),
+(6, 6, 6, NULL, 'READ'),
+(7, 7, 7, NULL, 'READ'),
+(8, 8, 8, NULL, 'WRITE'),
+(9, 9, 9, NULL, 'READ'),
+(10, 10, 10, NULL, 'READ');
 
 -- Inserir logs de acesso
 INSERT INTO log_acesso (id_log, id_usuario, id_documento, dt_acesso, tp_acesso) VALUES
-(1, 1, 1, '2023-01-16', 'visualizacao'),
-(2, 2, 2, '2023-02-02', 'edicao'),
-(3, 3, 3, '2023-02-16', 'visualizacao'),
-(4, 4, 4, '2023-03-02', 'visualizacao'),
-(5, 5, 5, '2023-03-16', 'edicao'),
-(6, 6, 6, '2023-04-02', 'visualizacao'),
-(7, 7, 7, '2023-04-16', 'visualizacao'),
-(8, 8, 8, '2023-05-02', 'edicao'),
-(9, 9, 9, '2023-05-16', 'visualizacao'),
-(10, 10, 10, '2023-06-02', 'visualizacao');
+(1, 1, 1, '2023-01-16', 'VIEW'),
+(2, 2, 2, '2023-02-02', 'EDIT'),
+(3, 3, 3, '2023-02-16', 'VIEW'),
+(4, 4, 4, '2023-03-02', 'VIEW'),
+(5, 5, 5, '2023-03-16', 'EDIT'),
+(6, 6, 6, '2023-04-02', 'VIEW'),
+(7, 7, 7, '2023-04-16', 'VIEW'),
+(8, 8, 8, '2023-05-02', 'EDIT'),
+(9, 9, 9, '2023-05-16', 'VIEW'),
+(10, 10, 10, '2023-06-02', 'VIEW');
 
 -- Inserir versões
-INSERT INTO versao (id_versao, id_documento, numero_versao, caminho_arquivo, dt_criacao, descricao_alteracao) VALUES
+INSERT INTO versao (id_versao, id_documento, numero_versao, path, dt_criacao, descricao_alteracao) VALUES
 (1, 1, 1, '/caminho/versao1_documento1.pdf', '2023-01-15', 'Versão inicial'),
 (2, 2, 1, '/caminho/versao1_documento2.pdf', '2023-02-01', 'Versão inicial'),
 (3, 3, 1, '/caminho/versao1_documento3.pdf', '2023-02-15', 'Versão inicial'),
