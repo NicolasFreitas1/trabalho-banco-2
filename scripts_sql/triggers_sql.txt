@@ -15,8 +15,8 @@ FOR EACH ROW
 EXECUTE FUNCTION atualiza_data_modificacao();
 
 -- Inserindo um documento de teste
-INSERT INTO public.documento (nome, descricao, caminho_arquivo, dt_criacao, dt_modificacao, id_propretario, id_tipo_documento)
-VALUES ('Documento Teste', 'Descrição do Documento Teste', '/caminho/arquivo/teste.doc', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1);
+INSERT INTO public.documento (id_documento, nome, descricao, caminho_arquivo, dt_criacao, dt_modificacao, id_propretario, id_tipo_documento)
+VALUES (15, 'Documento Teste', 'Descrição do Documento Teste', '/caminho/arquivo/teste.doc', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,1, 1);
 
 UPDATE public.documento
 SET descricao = 'Descrição modificada do Documento Teste'
