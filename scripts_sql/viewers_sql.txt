@@ -1,0 +1,30 @@
+-- Visualização de Documentos e Tipos de Documento
+CREATE OR REPLACE VIEW vw_documentos_com_tipos AS
+SELECT d.id_documento, d.nome AS nome_documento, d.descricao, d.caminho_arquivo,
+       d.dt_criacao, d.dt_modificacao, u.nome AS proprietario, td.nome AS tipo_documento
+FROM documento d
+JOIN usuario u ON d.id_propretario = u.id_usuario
+JOIN tipo_documento td ON d.id_tipo_documento = td.id_tipo_documento;
+
+-- Visualização de Permissões de Documentos por Usuário
+CREATE OR REPLACE VIEW vw_permissoes_documentos_por_usuario AS
+SELECT u.nome AS usuario, d.nome AS documento, p.tp_permissao AS tipo_permissao
+FROM permissao p
+JOIN usuario u ON p.id_usuario = u.id_usuario
+LEFT JOIN documento d ON p.id_documento = d.id_documento;
+
+-- Visualização de Logs de Acesso a Documentos
+CREATE OR REPLACE VIEW vw_logs_acesso_documentos AS
+SELECT l.id_log, u.nome AS usuario, d.nome AS documento, l.dt_acesso, l.tp_acesso
+FROM log_acesso l
+JOIN usuario u ON l.id_usuario = u.id_usuario
+JOIN documento d ON l.id_documento = d.id_documento;
+
+-- Exemplo de consulta na view de documentos com tipos
+SELECT * FROM vw_documentos_com_tipos;
+
+-- Exemplo de consulta na view de permissões de documentos por usuário
+SELECT * FROM vw_permissoes_documentos_por_usuario;
+
+-- Exemplo de consulta na view de logs de acesso a documentos
+SELECT * FROM vw_logs_acesso_documentos;

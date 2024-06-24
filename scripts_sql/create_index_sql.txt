@@ -1,0 +1,3 @@
+CREATE INDEX idx_document_name ON "documento" (nome);
+
+CREATE INDEX idx_document_type_id ON "documento" (id_tipo_documento);

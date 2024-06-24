@@ -1,0 +1,168 @@
+-- public.tag definition
+
+-- Drop table
+
+-- DROP TABLE public.tag;
+
+CREATE TABLE public.tag (
+	id_tag serial4 NOT NULL,
+	nome varchar(50) NOT NULL,
+	CONSTRAINT tag_pkey PRIMARY KEY (id_tag)
+);
+
+
+-- public.tipo_documento definition
+
+-- Drop table
+
+-- DROP TABLE public.tipo_documento;
+
+CREATE TABLE public.tipo_documento (
+	id_tipo_documento serial4 NOT NULL,
+	nome varchar(50) NOT NULL,
+	descricao text NOT NULL,
+	CONSTRAINT tipo_documento_pkey PRIMARY KEY (id_tipo_documento)
+);
+
+
+-- public.usuario definition
+
+-- Drop table
+
+-- DROP TABLE public.usuario;
+
+CREATE TABLE public.usuario (
+	id_usuario serial4 NOT NULL,
+	nome varchar(100) NOT NULL,
+	email varchar(250) NOT NULL,
+	senha varchar(100) NOT NULL,
+	dt_cadastro timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	tp_usuario public.tp_usario DEFAULT 'USER'::tp_usario NOT NULL,
+	CONSTRAINT usuario_pkey PRIMARY KEY (id_usuario)
+);
+CREATE UNIQUE INDEX usuario_email_key ON public.usuario USING btree (email);
+
+
+-- public.documento definition
+
+-- Drop table
+
+-- DROP TABLE public.documento;
+
+CREATE TABLE public.documento (
+	id_documento serial4 NOT NULL,
+	nome varchar(100) NOT NULL,
+	descricao text NOT NULL,
+	caminho_arquivo varchar(255) NOT NULL,
+	dt_criacao timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	dt_modificacao timestamp(3) NOT NULL,
+	id_propretario int4 NOT NULL,
+	id_tipo_documento int4 NOT NULL,
+	CONSTRAINT documento_pkey PRIMARY KEY (id_documento),
+	CONSTRAINT documento_id_propretario_fkey FOREIGN KEY (id_propretario) REFERENCES public.usuario(id_usuario) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT documento_id_tipo_documento_fkey FOREIGN KEY (id_tipo_documento) REFERENCES public.tipo_documento(id_tipo_documento) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+
+-- public.documento_tag definition
+
+-- Drop table
+
+-- DROP TABLE public.documento_tag;
+
+CREATE TABLE public.documento_tag (
+	id_documento int4 NOT NULL,
+	id_tag int4 NOT NULL,
+	CONSTRAINT documento_tag_pkey PRIMARY KEY (id_documento, id_tag),
+	CONSTRAINT documento_tag_id_documento_fkey FOREIGN KEY (id_documento) REFERENCES public.documento(id_documento) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT documento_tag_id_tag_fkey FOREIGN KEY (id_tag) REFERENCES public.tag(id_tag) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+
+-- public.log_acesso definition
+
+-- Drop table
+
+-- DROP TABLE public.log_acesso;
+
+CREATE TABLE public.log_acesso (
+	id_log serial4 NOT NULL,
+	id_usuario int4 NOT NULL,
+	id_documento int4 NOT NULL,
+	dt_acesso timestamp(3) NOT NULL,
+	tp_acesso public.tp_acesso NOT NULL,
+	CONSTRAINT log_acesso_pkey PRIMARY KEY (id_log),
+	CONSTRAINT log_acesso_id_documento_fkey FOREIGN KEY (id_documento) REFERENCES public.documento(id_documento) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT log_acesso_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+
+-- public.pasta definition
+
+-- Drop table
+
+-- DROP TABLE public.pasta;
+
+CREATE TABLE public.pasta (
+	id_pasta serial4 NOT NULL,
+	nome varchar(100) NOT NULL,
+	descricao text NOT NULL,
+	id_pasta_pai int4 NOT NULL,
+	id_propretario int4 NOT NULL,
+	dt_criacao timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	CONSTRAINT pasta_pkey PRIMARY KEY (id_pasta),
+	CONSTRAINT pasta_id_pasta_pai_fkey FOREIGN KEY (id_pasta_pai) REFERENCES public.pasta(id_pasta) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT pasta_id_propretario_fkey FOREIGN KEY (id_propretario) REFERENCES public.usuario(id_usuario) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+
+-- public.permissao definition
+
+-- Drop table
+
+-- DROP TABLE public.permissao;
+
+CREATE TABLE public.permissao (
+	id_permissao serial4 NOT NULL,
+	id_usuario int4 NOT NULL,
+	id_documento int4 NULL,
+	id_pasta int4 NULL,
+	tp_permissao public.tp_permissao NOT NULL,
+	CONSTRAINT permissao_pkey PRIMARY KEY (id_permissao),
+	CONSTRAINT permissao_id_documento_fkey FOREIGN KEY (id_documento) REFERENCES public.documento(id_documento) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT permissao_id_pasta_fkey FOREIGN KEY (id_pasta) REFERENCES public.pasta(id_pasta) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT permissao_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+
+-- public.versao definition
+
+-- Drop table
+
+-- DROP TABLE public.versao;
+
+CREATE TABLE public.versao (
+	id_versao serial4 NOT NULL,
+	id_documento int4 NOT NULL,
+	numero_versao int4 NOT NULL,
+	"path" varchar(255) NOT NULL,
+	dt_criacao timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	descricao_alteracao text NOT NULL,
+	CONSTRAINT versao_pkey PRIMARY KEY (id_versao),
+	CONSTRAINT versao_id_documento_fkey FOREIGN KEY (id_documento) REFERENCES public.documento(id_documento) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+
+-- public.documento_pasta definition
+
+-- Drop table
+
+-- DROP TABLE public.documento_pasta;
+
+CREATE TABLE public.documento_pasta (
+	id_documento int4 NOT NULL,
+	id_pasta int4 NOT NULL,
+	CONSTRAINT documento_pasta_pkey PRIMARY KEY (id_documento, id_pasta),
+	CONSTRAINT documento_pasta_id_documento_fkey FOREIGN KEY (id_documento) REFERENCES public.documento(id_documento) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT documento_pasta_id_pasta_fkey FOREIGN KEY (id_pasta) REFERENCES public.pasta(id_pasta) ON DELETE RESTRICT ON UPDATE CASCADE
+);
